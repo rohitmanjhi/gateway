@@ -11,8 +11,8 @@ class get_or_post_payment_gateway(APIView):
     def post(self, request):
         # Get all requested data
         request_payload = request.data
-        print('request_payload: ', request_payload)
         response_payload = {}
+
         # Get Currency instance
         try:
             currency = Currency.objects.get(name=request_payload['currency'])
@@ -21,6 +21,7 @@ class get_or_post_payment_gateway(APIView):
             response_payload['status'] = "failed"
             return Response(response_payload, content_type="application/json")
 
+        # Get Card type instance
         try:
             card_type = CardType.objects.get(name=request_payload['type'])
         except:
@@ -28,6 +29,7 @@ class get_or_post_payment_gateway(APIView):
             response_payload['status'] = "failed"
             return Response(response_payload, content_type="application/json")
 
+        # insert Card related data in dictionary
         card_data = {}
         card_data['number'] = request_payload['card']['number']
         card_data['expiration_month'] = request_payload['card']['expirationMonth']
@@ -35,6 +37,7 @@ class get_or_post_payment_gateway(APIView):
         card_data['cvv'] = request_payload['card']['cvv']
 
         card_serializer = CardSerializer(data=card_data)
+        # Check card serializer valid or not
         if card_serializer.is_valid():
             card = card_serializer.save()
             print('card: ', card)
@@ -43,6 +46,7 @@ class get_or_post_payment_gateway(APIView):
             response_payload['status'] = "failed"
             return Response(response_payload, content_type="application/json")
 
+        # Get status instance
         try:
             status = Status.objects.get(name="success")
         except:
@@ -50,6 +54,7 @@ class get_or_post_payment_gateway(APIView):
             response_payload['status'] = "failed"
             return Response(response_payload, content_type="application/json")
 
+        # Payment related data insert in dictionary
         payment_data = {}
         payment_data['amount'] = request_payload['amount']
         payment_data['currency'] = currency.id
@@ -57,14 +62,16 @@ class get_or_post_payment_gateway(APIView):
         payment_data['card'] = card.id
         payment_data['status'] = status.id
 
-        serializer = PaymentGatewaySerializer(data=payment_data)
-        if serializer.is_valid():
-            payment_gateway = serializer.save()
+        payment_serializer = PaymentGatewaySerializer(data=payment_data)
+        # Check payment serializer valid or not
+        if payment_serializer.is_valid():
+            payment_gateway = payment_serializer.save()
         else:
-            response_payload['errors'] = serializer.errors
+            response_payload['errors'] = payment_serializer.errors
             response_payload['status'] = "failed"
             return Response(response_payload, content_type="application/json")
 
+        # response data insert in dictionary
         response_payload["amount"] = payment_gateway.amount
         response_payload["currency"] = payment_gateway.currency.name
         response_payload["type"] = card_type.name
@@ -73,6 +80,5 @@ class get_or_post_payment_gateway(APIView):
         response_payload["authorization_code"] = payment_gateway.authorization_code
         response_payload["time"] = payment_gateway.created_at.strftime(
             '%d-%m-%Y %H:%M:%S')
-        print('response_payload: ', response_payload)
 
         return Response(response_payload, content_type="application/json")

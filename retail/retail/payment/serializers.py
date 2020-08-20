@@ -8,13 +8,6 @@ class PaymentGatewaySerializer(serializers.ModelSerializer):
         model = PaymentGateway
         fields = '__all__'
 
-    # def validate_mobile(self, mobile):
-    #     if re.match(r'[6789]\d{9}$', mobile):
-    #         return mobile
-    #     else:
-    #         raise serializers.ValidationError(
-    #             "Please enter valid mobile number")
-
 
 class CardSerializer(serializers.ModelSerializer):
 

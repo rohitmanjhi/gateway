@@ -1,0 +1,10 @@
+volumes/
+data/
+.env
+.vscode
+to_upload
+.DS_Store
+pdf/
+retail/pdfs/
+../Pipfile/
+ ../Pipfile.lock/

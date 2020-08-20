@@ -3,6 +3,10 @@ from django.db import models
 
 
 class BaseModel(models.Model):
+    """
+    BaseModel Model
+    Defines the attributes of a Basic model need
+    """
     id = models.BigAutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -12,6 +16,13 @@ class BaseModel(models.Model):
 
 
 class Currency(models.Model):
+    """
+    Currency Model
+    Defines the attributes of a Currency
+    """
+    INR = 1
+    USD = 2
+
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=25)
 
@@ -23,6 +34,13 @@ class Currency(models.Model):
 
 
 class CardType(models.Model):
+    """
+    CardType Model
+    Defines the attributes of a what type of card
+    """
+    CREDITCARD = 1
+    DEBITCARD = 2
+
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
 
@@ -34,6 +52,10 @@ class CardType(models.Model):
 
 
 class Card(models.Model):
+    """
+    Card Model
+    Defines the attributes of a card info
+    """
     id = models.BigAutoField(primary_key=True)
     number = models.PositiveIntegerField()
     expiration_month = models.PositiveIntegerField()
@@ -48,6 +70,13 @@ class Card(models.Model):
 
 
 class Status(models.Model):
+    """
+    Status Model
+    Defines the attributes of a Status info
+    """
+    SUCCESS = 1
+    FAILED = 2
+
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
 
@@ -59,6 +88,10 @@ class Status(models.Model):
 
 
 class PaymentGateway(BaseModel):
+    """
+    PaymentGateway Model
+    Defines the attributes of a PaymentGateway info
+    """
     id = models.BigAutoField(primary_key=True)
     amount = models.DecimalField(blank=True,
                                  null=True,
